@@ -36,11 +36,17 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @throws MqttException
 	 *             mqttexception
 	 */
-	public MessageHandler(String clientId) throws MqttException {
+	public MessageHandler(String clientId) {
+		this.vector = new Vector<MqttMessage>();
 		this.clientId = clientId;
 		this.persistence = new MemoryPersistence();
 		this.options = new MqttConnectOptions();
-		this.client = new MqttClient(BROKER, clientId);
+		try {
+			this.client = new MqttClient(BROKER, clientId);
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.isConnected = false;
 	}
 
@@ -50,11 +56,16 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @throws MqttSecurityException
 	 * @throws MqttException
 	 */
-	public void connect() throws MqttSecurityException, MqttException {
+	public void connect() {
 		if (!isConnected()) {
 			options.setCleanSession(true);
-			client.connect();
-			client.subscribe(TOPIC);
+			try {
+				client.connect();
+				client.subscribe(TOPIC);
+			} catch (MqttException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			client.setCallback(this);
 			setConnected(true);
 		}
@@ -65,10 +76,15 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * 
 	 * @throws MqttException
 	 */
-	public void disconnect() throws MqttException {
+	public void disconnect() {
 		if (isConnected()) {
-			client.unsubscribe(TOPIC);
-			client.disconnect();
+			try {
+				client.unsubscribe(TOPIC);
+				client.disconnect();
+			} catch (MqttException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			setConnected(false);
 		}
 	}
@@ -119,22 +135,15 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @throws MqttPersistenceException
 	 * @throws MqttException
 	 */
-	public void writeMessage(String text) throws MqttPersistenceException, MqttException {
+	public void writeMessage(String text) {
 		if (isConnected()) {
-			client.publish(TOPIC, new MqttMessage(new String("[" + clientId + "]" + text).getBytes()));
+			try {
+				client.publish(TOPIC, new MqttMessage(new String("[" + clientId + "]" + text).getBytes()));
+			} catch (MqttException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("[Message Sent] --> " + text);
-		}
-	}
-
-	@Override
-	public void run() {
-		super.run();
-		try {
-			Thread.sleep(1500);
-			while (hasNextMessage())
-				System.out.println("[Message Received]" + getNextMessage());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -149,7 +158,18 @@ public class MessageHandler extends Thread implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
+		System.out.println("Received Message --> " + message.toString());
 		vector.add(message);
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			if (hasNextMessage())
+				while (hasNextMessage()) {
+					System.out.println("[Received Message] " + getNextMessage().toString());
+				}
+		}
 	}
 
 }
