@@ -1,7 +1,8 @@
-package eduardo.bagarrao.freetalks.gui.login;
+package eduardo.bagarrao.freetalks.gui;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,9 +20,9 @@ public class Login extends JFrame{
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String APP_NAME = "FreeTalks";
-	private static final String PHASE = "Alpha";
-	private static final String VERSION = "0.0.1";
+	public static final String APP_NAME = "FreeTalks";
+	public static final String PHASE = "Alpha";
+	public static final String VERSION = "0.0.1";
 	
 	private ConnectionManager cm = ConnectionManager.getInstance();
 	
@@ -61,7 +62,8 @@ public class Login extends JFrame{
 				if(isValidUsername(usernameTextField.getText())) {
 						cm.setClientId(usernameTextField.getText());
 						cm.connect();
-					//TODO: closes Login gui and opens chat lobby
+						new Chat().init();
+						close();
 				}
 			}
 		});
@@ -69,6 +71,10 @@ public class Login extends JFrame{
 
 	public void go() {
 		setVisible(true);
+	}
+	
+	private void close() {
+		setVisible(false);
 	}
 	
 	private boolean isValidUsername(String username) {

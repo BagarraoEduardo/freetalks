@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import eduardo.bagarrao.freetalks.message.MessageHandler;
 
+
 public class ConnectionTest {
 
 	private static final String CLIENT_ID = "JUnitTester";

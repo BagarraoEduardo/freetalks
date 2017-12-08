@@ -1,9 +1,10 @@
 package eduardo.bagarrao.freetalks.engine;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttSecurityException;
-
 import eduardo.bagarrao.freetalks.message.MessageHandler;
+
+import java.util.Vector;
+
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class ConnectionManager {
 
@@ -20,6 +21,10 @@ public class ConnectionManager {
 	
 	public static ConnectionManager getInstance() {
 		return (INSTANCE != null)? INSTANCE : new ConnectionManager();
+	}
+	
+	public String getClientId() {
+		return clientId;
 	}
 	
 	public void setClientId(String clientId) {
@@ -46,6 +51,20 @@ public class ConnectionManager {
 	}
 	
 	public void disconnect(){
+	
 		handler.disconnect();
+	}
+	
+	public Vector<MqttMessage> getAllMessages(){
+		Vector<MqttMessage> vector = new Vector<MqttMessage>();
+		MqttMessage message;
+		while((message = handler.getNextMessage()) != null) {
+			vector.add(message);
+		}
+		return vector;
+	}
+
+	public void publishMessage(String text) {
+		handler.writeMessage(text);
 	}
 }
