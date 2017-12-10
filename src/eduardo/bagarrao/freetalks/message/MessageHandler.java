@@ -11,6 +11,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  * @author Eduardo Bagarrao Class that handles all received and sent messages
@@ -20,7 +22,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	private static final String BROKER = "tcp://iot.eclipse.org:1883";
 	private static final String TOPIC = "FreeTalks2017";
 
-	private Vector<MqttMessage> vector;
+	private Vector<JSONObject> vector;
 
 	private MqttClient client;
 	private MqttConnectOptions options;
@@ -37,14 +39,13 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 *             mqttexception
 	 */
 	public MessageHandler(String clientId) {
-		this.vector = new Vector<MqttMessage>();
+		this.vector = new Vector<JSONObject>();
 		this.clientId = clientId;
 		this.persistence = new MemoryPersistence();
 		this.options = new MqttConnectOptions();
 		try {
 			this.client = new MqttClient(BROKER, clientId);
 		} catch (MqttException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.isConnected = false;
@@ -63,7 +64,6 @@ public class MessageHandler extends Thread implements MqttCallback {
 				client.connect();
 				client.subscribe(TOPIC);
 			} catch (MqttException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			client.setCallback(this);
@@ -82,7 +82,6 @@ public class MessageHandler extends Thread implements MqttCallback {
 				client.unsubscribe(TOPIC);
 				client.disconnect();
 			} catch (MqttException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			setConnected(false);
@@ -114,7 +113,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @return null value if the {@link #vector} size is zero, else returns the
 	 *         message at the index 0 of the {@link #vector}
 	 */
-	public MqttMessage getNextMessage() {
+	public JSONObject getNextMessage() {
 		return (hasNextMessage()) ? vector.remove(0) : null;
 	}
 
@@ -136,11 +135,16 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @throws MqttException
 	 */
 	public void writeMessage(String text) {
+		JSONObject obj = new JSONObject();
+		obj.put("sender", clientId);
+		obj.put("message", text);
+		System.out.println(" clientID -->" + clientId);
+		System.out.println(" text -->" + text);
+		System.out.println(" jsonobject -->" + obj);
 		if (isConnected()) {
 			try {
-				client.publish(TOPIC, new MqttMessage(new String("[" + clientId + "]" + text).getBytes()));
+				client.publish(TOPIC, new MqttMessage(obj.toString().getBytes()));
 			} catch (MqttException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("[Message Sent] --> " + text);
@@ -159,7 +163,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		System.out.println("Received Message --> " + message.toString());
-		vector.add(message);
+		vector.add(new JSONObject(message.toString()));
 	}
 
 	@Override

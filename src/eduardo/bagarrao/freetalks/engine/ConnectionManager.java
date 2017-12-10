@@ -5,6 +5,7 @@ import eduardo.bagarrao.freetalks.message.MessageHandler;
 import java.util.Vector;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONObject;
 
 public class ConnectionManager {
 
@@ -55,11 +56,11 @@ public class ConnectionManager {
 		handler.disconnect();
 	}
 	
-	public Vector<MqttMessage> getAllMessages(){
-		Vector<MqttMessage> vector = new Vector<MqttMessage>();
-		MqttMessage message;
-		while((message = handler.getNextMessage()) != null) {
-			vector.add(message);
+	public Vector<JSONObject> getAllMessages(){
+		Vector<JSONObject> vector = new Vector<JSONObject>();
+		JSONObject obj;
+		while((obj = handler.getNextMessage()) != null) {
+			vector.add(obj);
 		}
 		return vector;
 	}

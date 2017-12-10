@@ -1,21 +1,26 @@
 package eduardo.bagarrao.freetalks.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONObject;
 
 import eduardo.bagarrao.freetalks.engine.ConnectionManager;
 
@@ -30,7 +35,8 @@ public class Chat extends JFrame {
 	private JTextArea writeTextArea;
 	private JButton sendButton;
 	private JPanel sendPanel;
-
+	private JPanel mainPanel;
+	
 	public Chat() {
 		setTitle("[" + cm.getClientId() + "]" + Login.APP_NAME + " " + Login.PHASE + " v" + Login.VERSION);
 		this.checker = new InputChecker();
@@ -38,14 +44,13 @@ public class Chat extends JFrame {
 		this.writeTextArea = new JTextArea();
 		this.sendPanel = new JPanel(new BorderLayout());
 		this.sendButton = new JButton("Send!");
-		
-		setLayout(new BorderLayout());
+		this.mainPanel  = new JPanel(new BorderLayout());
 		setSize(new Dimension(600, 600));
 	
 		sendPanel.add(writeTextArea);
 		sendPanel.add(sendButton, BorderLayout.EAST);
-		add(area);
-		add(sendPanel,BorderLayout.SOUTH);
+		mainPanel.add(area);
+		mainPanel.add(sendPanel,BorderLayout.SOUTH);
 		
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,6 +74,12 @@ public class Chat extends JFrame {
 	        });
 		checker.start();
 		
+		Border padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+
+		mainPanel.setBorder(padding);
+		sendPanel.setBorder(padding);
+		
+		setContentPane(mainPanel);
 	}
 
 	private class InputChecker extends Thread{
@@ -78,9 +89,10 @@ public class Chat extends JFrame {
 			while(true) {
 				try {
 					while(true) {
-						Vector<MqttMessage> vector = cm.getAllMessages();
-						for(MqttMessage message : vector){
-							area.setText(area.getText() + message.toString() + "\n");
+						Vector<JSONObject> vector = cm.getAllMessages();
+						for(JSONObject obj : vector){
+							if(!obj.get("sender").toString().equals(cm.getClientId()))
+							area.setText(area.getText() + obj.get("message").toString() + "\n");
 						}
 						Thread.sleep(1000);
 					}
