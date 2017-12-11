@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.ParseException;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 
 import eduardo.bagarrao.freetalks.engine.ConnectionManager;
 import eduardo.bagarrao.freetalks.message.Message;
+import eduardo.bagarrao.freetalks.util.DateParser;
 
 public class Chat extends JFrame {
 
@@ -94,12 +96,15 @@ public class Chat extends JFrame {
 						for(Message msg : vector){
 							if(!msg.getSender().toString().equals(cm.getClientId()))
 							area.setText(area.getText() + 
-									"[" + msg.getSender() + "]  " +
+									"[" + msg.getSender() + "] " + 
+									" [" + DateParser.parseString(msg.getDate()) + "] --> " +
 									msg.getMessage().toString() + "\n");
 						}
 						Thread.sleep(1000);
 					}
 				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 			}
