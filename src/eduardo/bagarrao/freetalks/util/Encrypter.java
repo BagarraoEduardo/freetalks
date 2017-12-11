@@ -1,4 +1,4 @@
-package eduardo.bagarrao.freetalks.message;
+package eduardo.bagarrao.freetalks.util;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

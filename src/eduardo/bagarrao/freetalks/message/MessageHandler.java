@@ -13,7 +13,8 @@ import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
+
+import eduardo.bagarrao.freetalks.util.Encrypter;
 
 /**
  * @author Eduardo Bagarrao Class that handles all received and sent messages

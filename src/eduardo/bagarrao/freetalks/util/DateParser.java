@@ -14,7 +14,7 @@
 	
 		private static Calendar cal = Calendar.getInstance();
 		
-		private static final String STRING_DATE_FORMAT = "dd-M-yyyy";
+		private static final String STRING_DATE_FORMAT = "dd-M-yyyy HH:mm:ss";
 		private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(STRING_DATE_FORMAT);
 	
 		/**
@@ -35,6 +35,36 @@
 		 */
 		public static String parseString(Date date) throws ParseException {
 			return SIMPLE_DATE_FORMAT.format(date);
+		}
+		
+		/**
+		 * 
+		 * @param date
+		 * @return
+		 */
+		public static int getSeconds(Date date) {
+			cal.setTime(date);
+			return cal.get(Calendar.SECOND);
+		}
+		
+		/**
+		 * 
+		 * @param date
+		 * @return
+		 */
+		public static int getMinutes(Date date) {
+			cal.setTime(date);
+			return cal.get(Calendar.MINUTE);
+		}
+		
+		/**
+		 * 
+		 * @param date
+		 * @return
+		 */
+		public static int getHour(Date date) {
+			cal.setTime(date);
+			return cal.get(Calendar.HOUR_OF_DAY);
 		}
 		
 		/**

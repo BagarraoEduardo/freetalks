@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import eduardo.bagarrao.freetalks.util.DateParser;
+import eduardo.bagarrao.freetalks.util.Encrypter;
 
 /**
  * 
@@ -45,9 +46,9 @@ public class Message extends MqttMessage{
 	public Message(JSONObject obj) throws Exception{
 		if(obj.has(KEY_SENDER) && obj.has(KEY_MESSAGE) && obj.has(KEY_DATE)) {
 			setPayload((Encrypter.encrypt(obj.toString(),"ssshhhhhhhhhhh!!!!").getBytes()));
-			this.sender = obj.get(KEY_SENDER).toString();
-			this.message = obj.get(KEY_MESSAGE).toString();
-			this.date = DateParser.parseDate(obj.get(KEY_DATE).toString());
+			this.sender = obj.getString(KEY_SENDER);
+			this.message = obj.getString(KEY_MESSAGE);
+			this.date = DateParser.parseDate(obj.getString(KEY_DATE));
 		}else
 			throw new IllegalArgumentException("[" + KEY_SENDER + "],[" + KEY_DATE + 
 					"] and [" + KEY_MESSAGE + "] keys are inexistent in this JSONObject");
@@ -79,7 +80,7 @@ public class Message extends MqttMessage{
 		} catch (ParseException e) {
 			if(obj.has(KEY_DATE))
 				obj.remove(KEY_DATE);
-			obj.put(KEY_DATE, "00-00-0000");
+			obj.put(KEY_DATE, "00-00-0000 00:00");
 			e.printStackTrace();
 		}
 		return obj;
