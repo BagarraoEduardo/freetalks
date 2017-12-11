@@ -1,7 +1,5 @@
 package eduardo.bagarrao.freetalks.main;
 
-import java.util.Scanner;
-
 import eduardo.bagarrao.freetalks.gui.Login;
 
 public class Main {

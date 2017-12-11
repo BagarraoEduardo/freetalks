@@ -23,6 +23,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
 import eduardo.bagarrao.freetalks.engine.ConnectionManager;
+import eduardo.bagarrao.freetalks.message.Message;
 
 public class Chat extends JFrame {
 
@@ -89,10 +90,12 @@ public class Chat extends JFrame {
 			while(true) {
 				try {
 					while(true) {
-						Vector<JSONObject> vector = cm.getAllMessages();
-						for(JSONObject obj : vector){
-							if(!obj.get("sender").toString().equals(cm.getClientId()))
-							area.setText(area.getText() + obj.get("message").toString() + "\n");
+						Vector<Message> vector = cm.getAllMessages();
+						for(Message msg : vector){
+							if(!msg.getSender().toString().equals(cm.getClientId()))
+							area.setText(area.getText() + 
+									"[" + msg.getSender() + "]  " +
+									msg.getMessage().toString() + "\n");
 						}
 						Thread.sleep(1000);
 					}

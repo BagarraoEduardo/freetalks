@@ -1,5 +1,6 @@
 package eduardo.bagarrao.freetalks.engine;
 
+import eduardo.bagarrao.freetalks.message.Message;
 import eduardo.bagarrao.freetalks.message.MessageHandler;
 
 import java.util.Vector;
@@ -56,11 +57,11 @@ public class ConnectionManager {
 		handler.disconnect();
 	}
 	
-	public Vector<JSONObject> getAllMessages(){
-		Vector<JSONObject> vector = new Vector<JSONObject>();
-		JSONObject obj;
-		while((obj = handler.getNextMessage()) != null) {
-			vector.add(obj);
+	public Vector<Message> getAllMessages(){
+		Vector<Message> vector = new Vector<Message>();
+		Message msg;
+		while((msg = handler.getNextMessage()) != null) {
+			vector.add(msg);
 		}
 		return vector;
 	}

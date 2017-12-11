@@ -1,5 +1,6 @@
 package eduardo.bagarrao.freetalks.message;
 
+import java.util.Date;
 import java.util.Vector;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -22,7 +23,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	private static final String BROKER = "tcp://iot.eclipse.org:1883";
 	private static final String TOPIC = "FreeTalks2017";
 
-	private Vector<JSONObject> vector;
+	private Vector<Message> vector;
 
 	private MqttClient client;
 	private MqttConnectOptions options;
@@ -39,7 +40,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 *             mqttexception
 	 */
 	public MessageHandler(String clientId) {
-		this.vector = new Vector<JSONObject>();
+		this.vector = new Vector<Message>();
 		this.clientId = clientId;
 		this.persistence = new MemoryPersistence();
 		this.options = new MqttConnectOptions();
@@ -113,7 +114,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @return null value if the {@link #vector} size is zero, else returns the
 	 *         message at the index 0 of the {@link #vector}
 	 */
-	public JSONObject getNextMessage() {
+	public Message getNextMessage() {
 		return (hasNextMessage()) ? vector.remove(0) : null;
 	}
 
@@ -135,19 +136,18 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @throws MqttException
 	 */
 	public void writeMessage(String text) {
-		JSONObject obj = new JSONObject();
-		obj.put("sender", clientId);
-		obj.put("message", text);
-		System.out.println(" clientID -->" + clientId);
-		System.out.println(" text -->" + text);
-		System.out.println(" jsonobject -->" + obj);
-		if (isConnected()) {
-			try {
-				client.publish(TOPIC, new MqttMessage(obj.toString().getBytes()));
-			} catch (MqttException e) {
-				e.printStackTrace();
+		try {
+			MqttMessage message = new Message(clientId, text, new Date());
+			if (isConnected()) {
+				try {
+					client.publish(TOPIC, message);
+				} catch (MqttException e) {
+					e.printStackTrace();
+				}
+				System.out.println("[Message Sent] --> " + text);
 			}
-			System.out.println("[Message Sent] --> " + text);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -163,7 +163,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		System.out.println("Received Message --> " + message.toString());
-		vector.add(new JSONObject(message.toString()));
+		vector.add(new Message(new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"))));
 	}
 
 	@Override
