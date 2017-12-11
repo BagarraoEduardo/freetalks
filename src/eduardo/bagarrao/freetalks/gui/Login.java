@@ -2,7 +2,6 @@ package eduardo.bagarrao.freetalks.gui;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
 
 import eduardo.bagarrao.freetalks.engine.ConnectionManager;
 
@@ -22,7 +20,7 @@ public class Login extends JFrame{
 
 	public static final String APP_NAME = "FreeTalks";
 	public static final String PHASE = "Alpha";
-	public static final String VERSION = "0.0.1";
+	public static final String VERSION = "0.0.2";
 	
 	private ConnectionManager cm = ConnectionManager.getInstance();
 	
