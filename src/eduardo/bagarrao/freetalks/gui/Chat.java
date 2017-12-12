@@ -13,7 +13,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.border.Border;
 
 import eduardo.bagarrao.freetalks.engine.ConnectionManager;
@@ -26,26 +28,31 @@ public class Chat extends JFrame {
 
 	private ConnectionManager cm = ConnectionManager.getInstance();
 
-	private JTextArea area;
+	private JTextPane area;
 	private JTextArea writeTextArea;
 	private JButton sendButton;
 	private JPanel sendPanel;
 	private JPanel mainPanel;
+	private JScrollPane areaScrollPane;
 	
 	public Chat() {
 		setTitle("[" + cm.getClientId() + "]" + Login.APP_NAME + " " + Login.PHASE + " v" + Login.VERSION);
-		this.area = new JTextArea();
+		this.area = new JTextPane();
 		this.writeTextArea = new JTextArea();
 		this.sendPanel = new JPanel(new BorderLayout());
 		this.sendButton = new JButton("Send!");
 		this.mainPanel  = new JPanel(new BorderLayout());
+		this.areaScrollPane = new JScrollPane(area, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		
 		setSize(new Dimension(600, 600));
-	
+		area.setEditable(false);
+		
 		sendPanel.add(writeTextArea);
 		sendPanel.add(sendButton, BorderLayout.EAST);
 		mainPanel.add(area);
 		mainPanel.add(sendPanel,BorderLayout.SOUTH);
 		
+		add(areaScrollPane);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		

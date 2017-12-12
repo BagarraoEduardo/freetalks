@@ -1,5 +1,6 @@
 package eduardo.bagarrao.freetalks.message;
 
+import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.Vector;
 
@@ -40,16 +41,12 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @throws MqttException
 	 *             mqttexception
 	 */
-	public MessageHandler(String clientId) {
+	public MessageHandler(String clientId) throws MqttException {
 		this.vector = new Vector<Message>();
 		this.clientId = clientId;
 		this.persistence = new MemoryPersistence();
 		this.options = new MqttConnectOptions();
-		try {
-			this.client = new MqttClient(BROKER, clientId);
-		} catch (MqttException e) {
-			e.printStackTrace();
-		}
+		this.client = new MqttClient(BROKER, ManagementFactory.getRuntimeMXBean().getName() + "_" + clientId);
 		this.isConnected = false;
 	}
 
