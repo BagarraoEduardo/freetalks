@@ -170,10 +170,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	@Override
 	public void run() {
 		while (true) {
-			if (hasNextMessage())
-				while (hasNextMessage()) {
-					System.out.println("[Received Message] " + getNextMessage().toString());
-				}
+			vector.forEach(message -> System.out.println("[Received Message] " + getNextMessage().toString()));
 		}
 	}
 
