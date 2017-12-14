@@ -1,5 +1,7 @@
 package eduardo.bagarrao.freetalks.message;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 
 import eduardo.bagarrao.freetalks.util.DateParser;
 import eduardo.bagarrao.freetalks.util.Encrypter;
+import eduardo.bagarrao.freetalks.util.ImageDecoder;
 
 /**
  * 
@@ -20,10 +23,13 @@ public class Message extends MqttMessage{
 	private static final String KEY_SENDER = "sender";
 	private static final String KEY_MESSAGE = "message";
 	private static final String KEY_DATE = "date";
+	private static final String KEY_IMAGE = "image";
 	
 	private String sender;
 	private String message;
 	private Date date;
+	private BufferedImage image;
+	
 	
 	/**
 	 * 
@@ -35,6 +41,23 @@ public class Message extends MqttMessage{
 		this.sender = sender;
 		this.message = message;
 		this.date = date;
+		this.image = null;
+		setPayload(Encrypter.encrypt(toJSONObject().toString(),"ssshhhhhhhhhhh!!!!").getBytes());
+	}
+	
+	/**
+	 * 
+	 * @param sender
+	 * @param message
+	 * @param date
+	 * @param image
+	 * @throws Exception
+	 */
+	public Message(String sender, String message, Date date, BufferedImage image) throws Exception{
+		this.sender = sender;
+		this.message = message;
+		this.date = date;
+		this.image = image;
 		setPayload(Encrypter.encrypt(toJSONObject().toString(),"ssshhhhhhhhhhh!!!!").getBytes());
 	}
 	
@@ -49,6 +72,9 @@ public class Message extends MqttMessage{
 			this.sender = obj.getString(KEY_SENDER);
 			this.message = obj.getString(KEY_MESSAGE);
 			this.date = DateParser.parseDate(obj.getString(KEY_DATE));
+			if(obj.has(KEY_IMAGE)) {
+				//TODO: handle image here
+			}
 		}else
 			throw new IllegalArgumentException("[" + KEY_SENDER + "],[" + KEY_DATE + 
 					"] and [" + KEY_MESSAGE + "] keys are inexistent in this JSONObject");
@@ -65,6 +91,16 @@ public class Message extends MqttMessage{
 	public Date getDate() {
 		return date;
 	}
+	
+	public Image getImage() {
+		return image;
+	}
+	
+	public void setImage(BufferedImage image) {
+		this.image = image;
+	}
+	
+	//TODO: metodo de converter dados de uma imagem para uma string
 	
 	/**
 	 * 
