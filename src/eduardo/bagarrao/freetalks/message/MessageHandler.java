@@ -1,5 +1,6 @@
 package eduardo.bagarrao.freetalks.message;
 
+import java.awt.image.BufferedImage;
 import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.Vector;
@@ -23,7 +24,7 @@ import eduardo.bagarrao.freetalks.util.Encrypter;
 public class MessageHandler extends Thread implements MqttCallback {
 
 	private static final String BROKER = "tcp://iot.eclipse.org:1883";
-	private static final String TOPIC = "FreeTalks2017";
+	private static final String[] TOPIC = {"FreeTalks2017TextMessage",ImageMessage.TOPIC};
 
 	private Vector<Message> vector;
 
@@ -46,7 +47,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 		this.clientId = clientId;
 		this.persistence = new MemoryPersistence();
 		this.options = new MqttConnectOptions();
-		this.client = new MqttClient(BROKER, ManagementFactory.getRuntimeMXBean().getName() + "_" + clientId);
+		this.client = new MqttClient(BROKER, ManagementFactory.getRuntimeMXBean().getName() + "_" + clientId,persistence);
 		this.isConnected = false;
 	}
 
@@ -78,6 +79,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	public void disconnect() {
 		if (isConnected()) {
 			try {
+				
 				client.unsubscribe(TOPIC);
 				client.disconnect();
 			} catch (MqttException e) {
@@ -134,15 +136,32 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @throws MqttException
 	 */
 	public void writeMessage(String text) {
+//		try {
+//			MqttMessage message = new Message(clientId, text, new Date(),"",MessageType.TEXT_MESSAGE);
+//			if (isConnected()) {
+//				try {
+//					client.publish(TOPIC, message);
+//				} catch (MqttException e) {
+//					e.printStackTrace();
+//				}
+//				System.out.println("[Message Sent] --> " + text);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		//TODO:
+	}
+	
+	public void writeMessage(String text, BufferedImage image) {
 		try {
-			MqttMessage message = new Message(clientId, text, new Date());
+			Message message = new ImageMessage(clientId, text, image, new Date());
 			if (isConnected()) {
 				try {
-					client.publish(TOPIC, message);
+					client.publish(message.getTopic(), message);
 				} catch (MqttException e) {
 					e.printStackTrace();
 				}
-				System.out.println("[Message Sent] --> " + text);
+				System.out.println("[ImageMessage Sent] --> " + text);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -160,8 +179,9 @@ public class MessageHandler extends Thread implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		System.out.println("Received Message --> " + message.toString());
-		vector.add(new Message(new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"))));
+		//TODO:
+		//		System.out.println("Received Message --> " + message.toString());
+//		vector.add(new Message(new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"))));
 	}
 
 	@Override

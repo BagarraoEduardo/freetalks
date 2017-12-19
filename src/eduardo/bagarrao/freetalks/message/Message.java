@@ -24,11 +24,13 @@ public abstract class Message extends MqttMessage{
 	protected static final String KEY_MESSAGE = "message";
 	protected static final String KEY_DATE = "date";
 	protected static final String KEY_TOPIC = "topic";
+	protected static final String KEY_TYPE = "type";
 	
 	private String sender;
 	private String message;
 	private Date date;
 	private String topic;
+	private MessageType type;
 	
 	/**
 	 * 
@@ -36,14 +38,14 @@ public abstract class Message extends MqttMessage{
 	 * @param message
 	 * @throws Exception 
 	 */
-	protected Message(String sender, String message, Date date, String topic) throws Exception{
+	protected Message(String sender, String message, Date date, String topic, MessageType type) throws Exception{
 		this.sender = sender;
 		this.message = message;
 		this.date = date;
 		this.topic = topic;
+		this.type = type;
 		setPayload(Encrypter.encrypt(toJSONObject().toString(),"ssshhhhhhhhhhh!!!!").getBytes());
 	}
-	
 	
 	/**
 	 * 
@@ -56,8 +58,9 @@ public abstract class Message extends MqttMessage{
 			this.sender = obj.getString(KEY_SENDER);
 			this.message = obj.getString(KEY_MESSAGE);
 			this.date = DateParser.parseDate(obj.getString(KEY_DATE));
+			this.type = MessageType.valueOf(obj.getString(KEY_TYPE));			
 		}else
-			throw new IllegalArgumentException("[" + KEY_SENDER + "],[" + KEY_DATE + 
+			throw new IllegalArgumentException("[" + KEY_SENDER + "],[" + KEY_TYPE + "],[" + KEY_DATE + 
 					"] and [" + KEY_MESSAGE + "] keys are inexistent in this JSONObject");
 	}
 	
@@ -65,13 +68,14 @@ public abstract class Message extends MqttMessage{
 	 * 
 	 * @param topic
 	 */
-	protected Message(String topic) {
+	protected Message(String topic, MessageType type) {
+		//TODO:
 		this.topic = topic;
 		this.date = null;
 		this.message = "";
 		this.sender = "";
+		this.type = type;
 	}
-
 	
 
 	public String getSender() {
@@ -88,6 +92,10 @@ public abstract class Message extends MqttMessage{
 
 	public String getTopic() {
 		return topic;
+	}
+	
+	protected MessageType getType() {
+		return type;
 	}
 	
 	protected void setSender(String sender) {
