@@ -18,18 +18,17 @@ import eduardo.bagarrao.freetalks.util.ImageDecoder;
  * @author Eduardo
  *
  */
-public class Message extends MqttMessage{
+public abstract class Message extends MqttMessage{
 
-	private static final String KEY_SENDER = "sender";
-	private static final String KEY_MESSAGE = "message";
-	private static final String KEY_DATE = "date";
-	private static final String KEY_IMAGE = "image";
+	protected static final String KEY_SENDER = "sender";
+	protected static final String KEY_MESSAGE = "message";
+	protected static final String KEY_DATE = "date";
+	protected static final String KEY_TOPIC = "topic";
 	
 	private String sender;
 	private String message;
 	private Date date;
-	private BufferedImage image;
-	
+	private String topic;
 	
 	/**
 	 * 
@@ -37,49 +36,44 @@ public class Message extends MqttMessage{
 	 * @param message
 	 * @throws Exception 
 	 */
-	public Message(String sender, String message, Date date) throws Exception{
+	protected Message(String sender, String message, Date date, String topic) throws Exception{
 		this.sender = sender;
 		this.message = message;
 		this.date = date;
-		this.image = null;
+		this.topic = topic;
 		setPayload(Encrypter.encrypt(toJSONObject().toString(),"ssshhhhhhhhhhh!!!!").getBytes());
 	}
 	
-	/**
-	 * 
-	 * @param sender
-	 * @param message
-	 * @param date
-	 * @param image
-	 * @throws Exception
-	 */
-	public Message(String sender, String message, Date date, BufferedImage image) throws Exception{
-		this.sender = sender;
-		this.message = message;
-		this.date = date;
-		this.image = image;
-		setPayload(Encrypter.encrypt(toJSONObject().toString(),"ssshhhhhhhhhhh!!!!").getBytes());
-	}
 	
 	/**
 	 * 
 	 * @param obj
 	 * @throws Exception 
 	 */
-	public Message(JSONObject obj) throws Exception{
+	protected Message(JSONObject obj) throws Exception{
 		if(obj.has(KEY_SENDER) && obj.has(KEY_MESSAGE) && obj.has(KEY_DATE)) {
 			setPayload((Encrypter.encrypt(obj.toString(),"ssshhhhhhhhhhh!!!!").getBytes()));
 			this.sender = obj.getString(KEY_SENDER);
 			this.message = obj.getString(KEY_MESSAGE);
 			this.date = DateParser.parseDate(obj.getString(KEY_DATE));
-			if(obj.has(KEY_IMAGE)) {
-				//TODO: handle image here
-			}
 		}else
 			throw new IllegalArgumentException("[" + KEY_SENDER + "],[" + KEY_DATE + 
 					"] and [" + KEY_MESSAGE + "] keys are inexistent in this JSONObject");
 	}
 	
+	/**
+	 * 
+	 * @param topic
+	 */
+	protected Message(String topic) {
+		this.topic = topic;
+		this.date = null;
+		this.message = "";
+		this.sender = "";
+	}
+
+	
+
 	public String getSender() {
 		return sender;
 	}
@@ -91,37 +85,53 @@ public class Message extends MqttMessage{
 	public Date getDate() {
 		return date;
 	}
-	
-	public Image getImage() {
-		return image;
+
+	public String getTopic() {
+		return topic;
 	}
 	
-	public void setImage(BufferedImage image) {
-		this.image = image;
+	protected void setSender(String sender) {
+		this.sender = sender;
 	}
+	
+	protected void setMessage(String message) {
+		this.message = message;
+	}
+	
+	protected void setDate(Date date) {
+		this.date = date;
+	}
+	
+	protected void setTopic(String topic) {
+		this.topic = topic;
+	}
+	
+	
 	
 	//TODO: metodo de converter dados de uma imagem para uma string
 	
-	/**
-	 * 
-	 * @return
-	 */
-	public JSONObject toJSONObject() {
-		JSONObject obj = new JSONObject();
-		obj.put(KEY_SENDER, this.sender);
-		obj.put(KEY_MESSAGE, this.message);try {
-			obj.put(KEY_DATE, DateParser.parseString(this.date));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			if(obj.has(KEY_DATE))
-				obj.remove(KEY_DATE);
-			obj.put(KEY_DATE, "00-00-0000 00:00");
-			e.printStackTrace();
-		}
-		return obj;
-	}
+//	/**
+//	 * 
+//	 * @return
+//	 */
+//	public JSONObject toJSONObject() {
+//		JSONObject obj = new JSONObject();
+//		obj.put(KEY_SENDER, this.sender);
+//		obj.put(KEY_MESSAGE, this.message);try {
+//			obj.put(KEY_DATE, DateParser.parseString(this.date));
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		} catch (ParseException e) {
+//			if(obj.has(KEY_DATE))
+//				obj.remove(KEY_DATE);
+//			obj.put(KEY_DATE, "00-00-0000 00:00");
+//			e.printStackTrace();
+//		}
+//		return obj;
+//	}
 
+	public abstract JSONObject toJSONObject();
+	
 	@Override
 	public String toString() {
 		return toJSONObject().toString();
