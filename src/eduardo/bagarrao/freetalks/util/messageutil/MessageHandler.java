@@ -1,4 +1,4 @@
-package eduardo.bagarrao.freetalks.message;
+package eduardo.bagarrao.freetalks.util.messageutil;
 
 import java.awt.image.BufferedImage;
 import java.lang.management.ManagementFactory;
@@ -16,6 +16,8 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
 
+import eduardo.bagarrao.freetalks.message.ImageMessage;
+import eduardo.bagarrao.freetalks.message.Message;
 import eduardo.bagarrao.freetalks.util.Encrypter;
 
 /**

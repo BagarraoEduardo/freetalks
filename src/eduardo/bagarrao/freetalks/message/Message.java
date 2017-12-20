@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import eduardo.bagarrao.freetalks.util.DateParser;
 import eduardo.bagarrao.freetalks.util.Encrypter;
 import eduardo.bagarrao.freetalks.util.ImageDecoder;
+import eduardo.bagarrao.freetalks.util.messageutil.MessageType;
 
 /**
  * 

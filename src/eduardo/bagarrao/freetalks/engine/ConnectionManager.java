@@ -1,7 +1,7 @@
 package eduardo.bagarrao.freetalks.engine;
 
 import eduardo.bagarrao.freetalks.message.Message;
-import eduardo.bagarrao.freetalks.message.MessageHandler;
+import eduardo.bagarrao.freetalks.util.messageutil.MessageHandler;
 
 import java.lang.management.ManagementFactory;
 import java.util.Vector;

@@ -10,21 +10,49 @@ import org.json.JSONObject;
 import eduardo.bagarrao.freetalks.util.DateParser;
 import eduardo.bagarrao.freetalks.util.Encrypter;
 import eduardo.bagarrao.freetalks.util.ImageDecoder;
+import eduardo.bagarrao.freetalks.util.messageutil.MessageType;
 
 public class ImageMessage extends Message {
 
+	/**
+	 * 
+	 */
 	public static final String TOPIC = "FreeTalks2017ImageMessage";
+	
+	/**
+	 * 
+	 */
 	private static final MessageType TYPE = MessageType.IMAGE_MESSAGE;
+	
+	/**
+	 * 
+	 */
 	private static final String KEY_IMAGE = "image";
 
+	/**
+	 * 
+	 */
 	private BufferedImage image;
 
+	/**
+	 * 
+	 * @param sender
+	 * @param message
+	 * @param image
+	 * @param date
+	 * @throws Exception
+	 */
 	public ImageMessage(String sender, String message, BufferedImage image, Date date) throws Exception {
 		super(sender, message, date, TOPIC, TYPE);
 		this.image = image;
 		setPayload(Encrypter.encrypt(toJSONObject().toString(), "ssshhhhhhhhhhh!!!!").getBytes()); // TODO:
 	}
 
+	/**
+	 * 
+	 * @param obj
+	 * @throws Exception
+	 */
 	public ImageMessage(JSONObject obj) throws Exception {
 		super(TOPIC, TYPE);
 		if (obj.has(KEY_SENDER) && obj.has(KEY_MESSAGE) && obj.has(KEY_DATE) && obj.has(KEY_IMAGE)) {
