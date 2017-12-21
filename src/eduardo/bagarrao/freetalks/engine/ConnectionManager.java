@@ -1,49 +1,96 @@
 package eduardo.bagarrao.freetalks.engine;
 
-import eduardo.bagarrao.freetalks.message.Message;
 import eduardo.bagarrao.freetalks.message.TextMessage;
 import eduardo.bagarrao.freetalks.util.messageutil.MessageHandler;
 
-import java.lang.management.ManagementFactory;
 import java.util.Vector;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONObject;
 
+/**
+ * 
+ * Singleton that connects({@link #connect()}) or disconnects({@link #disconnect()})
+ * to the client and gets the messages({@link #getAllMessages()}) 
+ * from the MessageHandler class.
+ * 
+ * @author Eduardo
+ *
+ */
 public class ConnectionManager {
 
+	/**
+	 * Only instance of {@link #ConnectionManager()} class.
+	 */
 	private static final ConnectionManager INSTANCE = new ConnectionManager();
 
+	/**
+	 * boolean that checks that {@link #clientId} is not empty.
+	 */
 	private boolean isIdSet;
+	
+	/**
+	 * clientId that is used to {@link #connect()}
+	 */
 	private String clientId;
+	
+	/**
+	 * Handler that allow message receiving and sending.
+	 */
 	private MessageHandler handler;
 
+	/**
+	 * {@link #ConnectionManager()} private and unique constructor
+	 */
 	private ConnectionManager() {
 		this.isIdSet = false;
 	}
-
+	
+	/**
+	 * getter for {@link #INSTANCE} 
+	 * @return {@link #INSTANCE}
+	 */
 	public static ConnectionManager getInstance() {
 		return (INSTANCE != null) ? INSTANCE : new ConnectionManager();
 	}
 
+	/**
+	 * getter for {@link #clientId}
+	 * @return {@link #clientId}
+	 */
 	public String getClientId() {
 		return clientId;
 	}
 
+	/**
+	 * setter for {@link #clientId}
+	 * @param clientId String to be set as {@link #clientId}
+	 */
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
 		setIdSet(true);
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param isIdSet
+	 */
 	public void setIdSet(boolean isIdSet) {
 		this.isIdSet = isIdSet;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isIdSet() {
 		return isIdSet;
 	}
 
+	/**
+	 * 
+	 * @throws MqttException
+	 */
 	public void connect() throws MqttException {
 		if (isIdSet()) {
 			System.out.println("Here before init");
@@ -54,10 +101,17 @@ public class ConnectionManager {
 			System.out.println("Set clientId before connect to server");
 	}
 
+	/**
+	 * 
+	 */
 	public void disconnect() {
 		handler.disconnect();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Vector<TextMessage> getAllMessages() {
 		Vector<TextMessage> vector = new Vector<TextMessage>();
 		TextMessage msg;
@@ -67,6 +121,10 @@ public class ConnectionManager {
 		return vector;
 	}
 
+	/**
+	 * 
+	 * @param text
+	 */
 	public void publishMessage(String text) {
 		handler.writeMessage(text);
 	}
