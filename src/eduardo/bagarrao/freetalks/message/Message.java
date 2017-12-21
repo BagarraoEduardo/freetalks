@@ -53,13 +53,13 @@ public abstract class Message extends MqttMessage{
 	 * @param obj
 	 * @throws Exception 
 	 */
-	protected Message(JSONObject obj) throws Exception{
+	protected Message(JSONObject obj, MessageType type) throws Exception{
 		if(obj.has(KEY_SENDER) && obj.has(KEY_MESSAGE) && obj.has(KEY_DATE)) {
 			setPayload((Encrypter.encrypt(obj.toString(),"ssshhhhhhhhhhh!!!!").getBytes()));
 			this.sender = obj.getString(KEY_SENDER);
 			this.message = obj.getString(KEY_MESSAGE);
 			this.date = DateParser.parseDate(obj.getString(KEY_DATE));
-			this.type = MessageType.valueOf(obj.getString(KEY_TYPE));			
+			this.type = type;			
 		}else
 			throw new IllegalArgumentException("[" + KEY_SENDER + "],[" + KEY_TYPE + "],[" + KEY_DATE + 
 					"] and [" + KEY_MESSAGE + "] keys are inexistent in this JSONObject");
@@ -70,7 +70,6 @@ public abstract class Message extends MqttMessage{
 	 * @param topic
 	 */
 	protected Message(String topic, MessageType type) {
-		//TODO:
 		this.topic = topic;
 		this.date = null;
 		this.message = "";
@@ -115,35 +114,5 @@ public abstract class Message extends MqttMessage{
 		this.topic = topic;
 	}
 	
-	
-	
-	//TODO: metodo de converter dados de uma imagem para uma string
-	
-//	/**
-//	 * 
-//	 * @return
-//	 */
-//	public JSONObject toJSONObject() {
-//		JSONObject obj = new JSONObject();
-//		obj.put(KEY_SENDER, this.sender);
-//		obj.put(KEY_MESSAGE, this.message);try {
-//			obj.put(KEY_DATE, DateParser.parseString(this.date));
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		} catch (ParseException e) {
-//			if(obj.has(KEY_DATE))
-//				obj.remove(KEY_DATE);
-//			obj.put(KEY_DATE, "00-00-0000 00:00");
-//			e.printStackTrace();
-//		}
-//		return obj;
-//	}
-
 	public abstract JSONObject toJSONObject();
-	
-	@Override
-	public String toString() {
-		return toJSONObject().toString();
 	}
-	
-}
