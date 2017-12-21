@@ -21,6 +21,8 @@ import eduardo.bagarrao.freetalks.util.messageutil.MessageType;
  */
 public abstract class Message extends MqttMessage{
 
+	public static final String TOPIC = "FreeTalks2017newChat";
+	
 	protected static final String KEY_SENDER = "sender";
 	protected static final String KEY_MESSAGE = "message";
 	protected static final String KEY_DATE = "date";
@@ -39,11 +41,10 @@ public abstract class Message extends MqttMessage{
 	 * @param message
 	 * @throws Exception 
 	 */
-	protected Message(String sender, String message, Date date, String topic, MessageType type) throws Exception{
+	protected Message(String sender, String message, Date date, MessageType type) throws Exception{
 		this.sender = sender;
 		this.message = message;
 		this.date = date;
-		this.topic = topic;
 		this.type = type;
 		setPayload(Encrypter.encrypt(toJSONObject().toString(),"ssshhhhhhhhhhh!!!!").getBytes());
 	}
@@ -69,8 +70,7 @@ public abstract class Message extends MqttMessage{
 	 * 
 	 * @param topic
 	 */
-	protected Message(String topic, MessageType type) {
-		this.topic = topic;
+	protected Message(MessageType type) {
 		this.date = null;
 		this.message = "";
 		this.sender = "";
@@ -89,11 +89,6 @@ public abstract class Message extends MqttMessage{
 	public Date getDate() {
 		return date;
 	}
-
-	public String getTopic() {
-		return topic;
-	}
-	
 	protected MessageType getType() {
 		return type;
 	}
@@ -108,10 +103,6 @@ public abstract class Message extends MqttMessage{
 	
 	protected void setDate(Date date) {
 		this.date = date;
-	}
-	
-	protected void setTopic(String topic) {
-		this.topic = topic;
 	}
 	
 	public abstract JSONObject toJSONObject();

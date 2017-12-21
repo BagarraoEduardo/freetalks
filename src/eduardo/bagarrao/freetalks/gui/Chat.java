@@ -20,6 +20,7 @@ import javax.swing.border.Border;
 
 import eduardo.bagarrao.freetalks.engine.ConnectionManager;
 import eduardo.bagarrao.freetalks.message.Message;
+import eduardo.bagarrao.freetalks.message.TextMessage;
 import eduardo.bagarrao.freetalks.util.DateParser;
 
 public class Chat extends JFrame {
@@ -72,8 +73,8 @@ public class Chat extends JFrame {
 		new Thread(() -> {while(true) {
 			try {
 				while(true) {
-					Vector<Message> vector = cm.getAllMessages();
-					for(Message msg : vector){
+					Vector<TextMessage> vector = cm.getAllMessages();
+					for(TextMessage msg : vector){
 						area.setText(area.getText() + 
 								"[" + ((msg.getSender().equals(cm.getClientId())? "You" : msg.getSender())) + "] " + 
 								" [" + DateParser.parseString(msg.getDate()) + "] --> " +
@@ -99,5 +100,8 @@ public class Chat extends JFrame {
 	public void init() {
 		setVisible(true);
 	}
+	
+	
+	
 }
 	

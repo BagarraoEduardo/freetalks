@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import eduardo.bagarrao.freetalks.message.ImageMessage;
 import eduardo.bagarrao.freetalks.message.Message;
+import eduardo.bagarrao.freetalks.message.TextMessage;
 import eduardo.bagarrao.freetalks.util.Encrypter;
 
 /**
@@ -26,9 +27,8 @@ import eduardo.bagarrao.freetalks.util.Encrypter;
 public class MessageHandler extends Thread implements MqttCallback {
 
 	private static final String BROKER = "tcp://iot.eclipse.org:1883";
-	private static final String[] TOPIC = {"FreeTalks2017TextMessage",ImageMessage.TOPIC};
 
-	private Vector<Message> vector;
+	private Vector<TextMessage> vector;
 
 	private MqttClient client;
 	private MqttConnectOptions options;
@@ -45,7 +45,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 *             mqttexception
 	 */
 	public MessageHandler(String clientId) throws MqttException {
-		this.vector = new Vector<Message>();
+		this.vector = new Vector<TextMessage>();
 		this.clientId = clientId;
 		this.persistence = new MemoryPersistence();
 		this.options = new MqttConnectOptions();
@@ -64,7 +64,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 			options.setCleanSession(true);
 			try {
 				client.connect();
-				client.subscribe(TOPIC);
+				client.subscribe(Message.TOPIC);
 			} catch (MqttException e) {
 				e.printStackTrace();
 			}
@@ -82,7 +82,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 		if (isConnected()) {
 			try {
 				
-				client.unsubscribe(TOPIC);
+				client.unsubscribe(Message.TOPIC);
 				client.disconnect();
 			} catch (MqttException e) {
 				e.printStackTrace();
@@ -116,7 +116,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @return null value if the {@link #vector} size is zero, else returns the
 	 *         message at the index 0 of the {@link #vector}
 	 */
-	public Message getNextMessage() {
+	public TextMessage getNextMessage() {
 		return (hasNextMessage()) ? vector.remove(0) : null;
 	}
 
@@ -138,20 +138,19 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 * @throws MqttException
 	 */
 	public void writeMessage(String text) {
-//		try {
-//			MqttMessage message = new Message(clientId, text, new Date(),"",MessageType.TEXT_MESSAGE);
-//			if (isConnected()) {
-//				try {
-//					client.publish(TOPIC, message);
-//				} catch (MqttException e) {
-//					e.printStackTrace();
-//				}
-//				System.out.println("[Message Sent] --> " + text);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		//TODO:
+		try {
+			MqttMessage message = new TextMessage(clientId, text, new Date());
+			if (isConnected()) {
+				try {
+					client.publish(Message.TOPIC, message);
+				} catch (MqttException e) {
+					e.printStackTrace();
+				}
+				System.out.println("[Message Sent] --> " + text);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void writeMessage(String text, BufferedImage image) {
@@ -159,7 +158,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 			Message message = new ImageMessage(clientId, text, image, new Date());
 			if (isConnected()) {
 				try {
-					client.publish(message.getTopic(), message);
+					client.publish(Message.TOPIC, message);
 				} catch (MqttException e) {
 					e.printStackTrace();
 				}
@@ -181,9 +180,8 @@ public class MessageHandler extends Thread implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		//TODO:
-		//		System.out.println("Received Message --> " + message.toString());
-//		vector.add(new Message(new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"))));
+		System.out.println("Received Message --> " + message.toString());
+		vector.add(new TextMessage(new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"))));
 	}
 
 	@Override
@@ -192,5 +190,4 @@ public class MessageHandler extends Thread implements MqttCallback {
 			vector.forEach(message -> System.out.println("[Received Message] " + getNextMessage().toString()));
 		}
 	}
-
 }

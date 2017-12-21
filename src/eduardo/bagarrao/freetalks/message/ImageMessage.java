@@ -17,13 +17,8 @@ public class ImageMessage extends Message {
 	/**
 	 * 
 	 */
-	public static final String TOPIC = "FreeTalks2017ImageMessage";
-	
-	/**
-	 * 
-	 */
 	private static final MessageType TYPE = MessageType.IMAGE_MESSAGE;
-	
+
 	/**
 	 * 
 	 */
@@ -43,7 +38,7 @@ public class ImageMessage extends Message {
 	 * @throws Exception
 	 */
 	public ImageMessage(String sender, String message, BufferedImage image, Date date) throws Exception {
-		super(sender, message, date, TOPIC, TYPE);
+		super(sender, message, date, TYPE);
 		this.image = image;
 		setPayload(Encrypter.encrypt(toJSONObject().toString(), "ssshhhhhhhhhhh!!!!").getBytes()); // TODO:
 	}
@@ -54,7 +49,7 @@ public class ImageMessage extends Message {
 	 * @throws Exception
 	 */
 	public ImageMessage(JSONObject obj) throws Exception {
-		super(TOPIC, TYPE);
+		super(TYPE);
 		if (obj.has(KEY_SENDER) && obj.has(KEY_MESSAGE) && obj.has(KEY_DATE) && obj.has(KEY_IMAGE)) {
 			setPayload((Encrypter.encrypt(obj.toString(), "ssshhhhhhhhhhh!!!!").getBytes()));
 			setSender(obj.getString(KEY_SENDER));

@@ -1,6 +1,7 @@
 package eduardo.bagarrao.freetalks.engine;
 
 import eduardo.bagarrao.freetalks.message.Message;
+import eduardo.bagarrao.freetalks.message.TextMessage;
 import eduardo.bagarrao.freetalks.util.messageutil.MessageHandler;
 
 import java.lang.management.ManagementFactory;
@@ -57,9 +58,9 @@ public class ConnectionManager {
 		handler.disconnect();
 	}
 
-	public Vector<Message> getAllMessages() {
-		Vector<Message> vector = new Vector<Message>();
-		Message msg;
+	public Vector<TextMessage> getAllMessages() {
+		Vector<TextMessage> vector = new Vector<TextMessage>();
+		TextMessage msg;
 		while ((msg = handler.getNextMessage()) != null) {
 			vector.add(msg);
 		}
