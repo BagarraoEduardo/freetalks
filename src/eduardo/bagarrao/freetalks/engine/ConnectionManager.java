@@ -9,9 +9,9 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 /**
  * 
- * Singleton that connects({@link #connect()}) or disconnects({@link #disconnect()})
- * to the client and gets the messages({@link #getAllMessages()}) 
- * from the MessageHandler class.
+ * Singleton that connects({@link #connect()}) or
+ * disconnects({@link #disconnect()}) to the client and gets the
+ * messages({@link #getAllMessages()}) from the MessageHandler class.
  * 
  * @author Eduardo
  *
@@ -27,12 +27,12 @@ public class ConnectionManager {
 	 * boolean that checks that {@link #clientId} is not empty.
 	 */
 	private boolean isIdSet;
-	
+
 	/**
 	 * clientId that is used to {@link #connect()}
 	 */
 	private String clientId;
-	
+
 	/**
 	 * Handler that allow message receiving and sending.
 	 */
@@ -44,9 +44,10 @@ public class ConnectionManager {
 	private ConnectionManager() {
 		this.isIdSet = false;
 	}
-	
+
 	/**
-	 * getter for {@link #INSTANCE} 
+	 * getter for {@link #INSTANCE}
+	 * 
 	 * @return {@link #INSTANCE}
 	 */
 	public static ConnectionManager getInstance() {
@@ -55,6 +56,7 @@ public class ConnectionManager {
 
 	/**
 	 * getter for {@link #clientId}
+	 * 
 	 * @return {@link #clientId}
 	 */
 	public String getClientId() {
@@ -63,7 +65,9 @@ public class ConnectionManager {
 
 	/**
 	 * setter for {@link #clientId}
-	 * @param clientId String to be set as {@link #clientId}
+	 * 
+	 * @param clientId
+	 *            String to be set as {@link #clientId}
 	 */
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
@@ -72,22 +76,27 @@ public class ConnectionManager {
 
 	/**
 	 * 
+	 * setter for {@link #isIdSet}
 	 * 
 	 * @param isIdSet
 	 */
-	public void setIdSet(boolean isIdSet) {
+	private void setIdSet(boolean isIdSet) {
 		this.isIdSet = isIdSet;
 	}
 
 	/**
+	 * return the value of the {@link #isIdSet}.
 	 * 
-	 * @return
+	 * @return {@link #isIdSet}
 	 */
 	public boolean isIdSet() {
 		return isIdSet;
 	}
 
 	/**
+	 * 
+	 * inits the {@link #handler}, connecting to the MQTT client (only if
+	 * {@link #isIdSet} is true)
 	 * 
 	 * @throws MqttException
 	 */
@@ -103,6 +112,8 @@ public class ConnectionManager {
 
 	/**
 	 * 
+	 * Disconnects the MQTT client that is in the {@link #handler} class.
+	 * 
 	 */
 	public void disconnect() {
 		handler.disconnect();
@@ -110,7 +121,9 @@ public class ConnectionManager {
 
 	/**
 	 * 
-	 * @return
+	 * Returns all messages that {@link #handler} has on his Vector
+	 * 
+	 * @return Vector with all textMessages that {@link #handler} has saved.
 	 */
 	public Vector<TextMessage> getAllMessages() {
 		Vector<TextMessage> vector = new Vector<TextMessage>();
@@ -123,7 +136,10 @@ public class ConnectionManager {
 
 	/**
 	 * 
+	 * Sends a String to send a textMessage to MQTT client
+	 * 
 	 * @param text
+	 *            data to send to {@link #handler} to publish
 	 */
 	public void publishMessage(String text) {
 		handler.writeMessage(text);
