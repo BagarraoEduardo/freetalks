@@ -1,3 +1,4 @@
+
 package eduardo.bagarrao.freetalks.util.messageutil;
 
 import java.awt.image.BufferedImage;
@@ -28,8 +29,9 @@ public class MessageHandler extends Thread implements MqttCallback {
 
 	private static final String BROKER = "tcp://iot.eclipse.org:1883";
 
-	private Vector<TextMessage> vector;
-
+	private Vector<TextMessage> textMessageVector;
+	private Vector<ImageMessage> imageMessageVector;
+	
 	private MqttClient client;
 	private MqttConnectOptions options;
 	private MemoryPersistence persistence;
@@ -45,7 +47,8 @@ public class MessageHandler extends Thread implements MqttCallback {
 	 *             mqttexception
 	 */
 	public MessageHandler(String clientId) throws MqttException {
-		this.vector = new Vector<TextMessage>();
+		this.textMessageVector = new Vector<TextMessage>();
+		this.imageMessageVector = new Vector<ImageMessage>();
 		this.clientId = clientId;
 		this.persistence = new MemoryPersistence();
 		this.options = new MqttConnectOptions();
@@ -111,22 +114,41 @@ public class MessageHandler extends Thread implements MqttCallback {
 	}
 
 	/**
-	 * returns the oldest message from {@link #vector}
+	 * returns the oldest message from {@link #textMessageVector}
 	 * 
-	 * @return null value if the {@link #vector} size is zero, else returns the
-	 *         message at the index 0 of the {@link #vector}
+	 * @return null value if the {@link #textMessageVector} size is zero, else returns the
+	 *         message at the index 0 of the {@link #textMessageVector}
 	 */
-	public TextMessage getNextMessage() {
-		return (hasNextMessage()) ? vector.remove(0) : null;
+	public TextMessage getNextTextMessage() {
+		return (hasNextTextMessage()) ? textMessageVector.remove(0) : null;
 	}
 
 	/**
-	 * checks if the {@link #vector} has messages by handle
+	 * checks if the {@link #textMessageVector} has messages by handle
 	 * 
-	 * @return checks if the size of the {@link #vector} is not zero
+	 * @return checks if the size of the {@link #textMessageVector} is not zero
 	 */
-	private boolean hasNextMessage() {
-		return vector.size() != 0;
+	private boolean hasNextTextMessage() {
+		return textMessageVector.size() != 0;
+	}
+	
+	/**
+	 * returns the oldest message from {@link #textMessageVector}
+	 * 
+	 * @return null value if the {@link #textMessageVector} size is zero, else returns the
+	 *         message at the index 0 of the {@link #textMessageVector}
+	 */
+	public ImageMessage getNextImageMessage() {
+		return (hasNextImageMessage()) ? imageMessageVector.remove(0) : null;
+	}
+
+	/**
+	 * checks if the {@link #textMessageVector} has messages by handle
+	 * 
+	 * @return checks if the size of the {@link #textMessageVector} is not zero
+	 */
+	private boolean hasNextImageMessage() {
+		return imageMessageVector.size() != 0;
 	}
 
 	/**
@@ -171,7 +193,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 
 	@Override
 	public void connectionLost(Throwable throwable) {
-		throwable.printStackTrace();
+		connect();
 	}
 
 	@Override
@@ -180,14 +202,34 @@ public class MessageHandler extends Thread implements MqttCallback {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		System.out.println("Received Message --> " + message.toString());
-		vector.add(new TextMessage(new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"))));
+		JSONObject obj = new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"));
+		if(obj.has(ImageMessage.KEY_TYPE)) {
+			switch(MessageType.valueOf(obj.getString(ImageMessage.KEY_TYPE))) {
+			case TEXT_MESSAGE:
+				System.out.println("Received Text Message! --> " + message.toString());
+				textMessageVector.add(new TextMessage(new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"))));
+				break;
+			case IMAGE_MESSAGE:
+				System.out.println("Received Image Message! --> " + message.toString());
+				imageMessageVector.add(new ImageMessage(new JSONObject(Encrypter.decrypt(message.toString(), "ssshhhhhhhhhhh!!!!"))));
+				break;
+			default:
+				break;
+			};
+		}
+		else {
+			//descarta...
+		}
+			
 	}
 
+	
+	
 	@Override
 	public void run() {
 		while (true) {
-			vector.forEach(message -> System.out.println("[Received Message] " + getNextMessage().toString()));
+			textMessageVector.forEach(message -> System.out.println("[Received text message] " + getNextImageMessage().toString()));
+			imageMessageVector.forEach(message -> System.out.println("[Received image message] " + getNextTextMessage().toString()));
 		}
 	}
 }

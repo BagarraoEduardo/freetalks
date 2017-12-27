@@ -1,8 +1,10 @@
 package eduardo.bagarrao.freetalks.engine;
 
+import eduardo.bagarrao.freetalks.message.ImageMessage;
 import eduardo.bagarrao.freetalks.message.TextMessage;
 import eduardo.bagarrao.freetalks.util.messageutil.MessageHandler;
 
+import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -125,15 +127,31 @@ public class ConnectionManager {
 	 * 
 	 * @return Vector with all textMessages that {@link #handler} has saved.
 	 */
-	public Vector<TextMessage> getAllMessages() {
+	public Vector<TextMessage> getAllTexMessages() {
 		Vector<TextMessage> vector = new Vector<TextMessage>();
 		TextMessage msg;
-		while ((msg = handler.getNextMessage()) != null) {
+		while ((msg = handler.getNextTextMessage()) != null) {
+			
 			vector.add(msg);
 		}
 		return vector;
 	}
 
+	/**
+	 * 
+	 * Returns all messages that {@link #handler} has on his Vector
+	 * 
+	 * @return Vector with all textMessages that {@link #handler} has saved.
+	 */
+	public Vector<ImageMessage> getAllImageMessages() {
+		Vector<ImageMessage> vector = new Vector<ImageMessage>();
+		ImageMessage msg;
+		while ((msg = handler.getNextImageMessage()) != null) {	
+			vector.add(msg);
+		}
+		return vector;
+	}
+	
 	/**
 	 * 
 	 * Sends a String to send a textMessage to MQTT client
@@ -143,5 +161,16 @@ public class ConnectionManager {
 	 */
 	public void publishMessage(String text) {
 		handler.writeMessage(text);
+	}
+	
+	/**
+	 * 
+	 * Sends a String and a Image to send a ImageMessage to MQTT client
+	 * 
+	 * @param text
+	 *            data to send to {@link #handler} to publish
+	 */
+	public void publishMessage(String text, BufferedImage image) {
+		handler.writeMessage(text,image);
 	}
 }

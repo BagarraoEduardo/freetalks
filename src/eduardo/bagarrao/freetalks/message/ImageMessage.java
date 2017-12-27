@@ -22,7 +22,7 @@ public class ImageMessage extends Message {
 	/**
 	 * 
 	 */
-	private static final String KEY_IMAGE = "image";
+	public static final String KEY_IMAGE = "image";
 
 	/**
 	 * 
