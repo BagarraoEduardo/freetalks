@@ -174,6 +174,7 @@ public class Chat extends JFrame implements ActionListener {
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		FileFilter filter = new FileNameExtensionFilter("Image files", "png");
 		fileChooser.setFileFilter(filter);		
+		getRootPane().setDefaultButton(sendButton);
 	}
 
 	/**

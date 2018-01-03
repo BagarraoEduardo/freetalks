@@ -36,6 +36,7 @@ public class Login extends JFrame {
 	private JButton loginButton;
 
 	public Login() {
+		
 		setTitle(APP_NAME + " " + PHASE + " v" + VERSION);
 
 		this.usernameLabel = new JLabel("Username:");
@@ -100,6 +101,8 @@ public class Login extends JFrame {
 			new Chat().init();
 			close();
 		});
+		
+		getRootPane().setDefaultButton(loginButton);
 	}
 
 	public void go() {
