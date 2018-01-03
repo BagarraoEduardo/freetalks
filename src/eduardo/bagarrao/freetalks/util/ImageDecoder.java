@@ -56,7 +56,7 @@ public class ImageDecoder {
 			int rgb = ((JSONObject) obj).getInt("rgb");
 			image.setRGB(x, y, rgb);
 		}
-		String dir = "C:\\Users\\eduar\\Desktop\\";
+		String dir = System.getProperty("java.io.tmpdir");
 		int iterator = 0;
 		String fileName = "file";
 		String extension = ".png";
@@ -75,16 +75,5 @@ public class ImageDecoder {
 		newImage = ImageIO.read(file);
 		file.delete();
 		return newImage;
-	}
-
-	public static void main(String[] args) throws IOException {
-		BufferedImage image = ImageIO.read(new File("C:\\chara.png"));
-		JSONArray array = parseJSONArray(image);
-		BufferedImage newImage = parseBufferedImage(array);
-		File file = new File("C:\\Users\\eduar\\Desktop\\newChara.png");
-		if (!file.exists())
-			file.createNewFile();
-		ImageIO.write(newImage, "png", file);
-
 	}
 }

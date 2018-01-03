@@ -22,6 +22,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -139,8 +140,9 @@ public class Chat extends JFrame implements ActionListener {
 		this.sendButton = new JButton("Send!");
 		this.addImageButton = new JButton("Include Image");
 		this.mainPanel = new JPanel(new BorderLayout());
-		this.areaScrollPane = new JScrollPane(area, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.areaScrollPane = new JScrollPane(area, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+	
 		this.fileChooser = new JFileChooser();
 		this.padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 		this.image = null;
@@ -164,17 +166,17 @@ public class Chat extends JFrame implements ActionListener {
 		sendPanel.add(sendPanel2, BorderLayout.EAST);
 		mainPanel.add(area);
 		mainPanel.add(sendPanel, BorderLayout.SOUTH);
-		Container container = getContentPane(); 
-		container.add(areaScrollPane, BorderLayout.CENTER);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainPanel.setBorder(padding);
 		sendPanel.setBorder(padding);
 		setContentPane(mainPanel);
+		areaScrollPane.setPreferredSize(new Dimension(600, 600));
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		FileFilter filter = new FileNameExtensionFilter("Image files", "png");
-		fileChooser.setFileFilter(filter);		
-		getRootPane().setDefaultButton(sendButton);
+		fileChooser.setFileFilter(filter);
+		revalidate();
+		repaint();
 	}
 
 	/**
@@ -245,33 +247,22 @@ public class Chat extends JFrame implements ActionListener {
 
 	public void writeReceivedMessage(ImageMessage msg) throws ParseException, BadLocationException {
 		synchronized (area) {
-			String text = "[" + ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender()))
-					+ "] " + " [" + DateParser.parseString(msg.getDate()) + "] --> " + msg.getMessage().toString()
-					+ "\n";
+			String text = "[" + ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender())) + "] " + " ["
+					+ DateParser.parseString(msg.getDate()) + "] --> " + msg.getMessage().toString() + "\n";
 			BufferedImage image = msg.getImage();
-			System.out.println("Vou imprimir a imagem -->");
-			try {
-				ImageIO.write(image, "png",new File("C:\\Users\\eduar\\Desktop\\saved.png") );
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			Style style = document.addStyle("StyleName", null);
 			StyleConstants.setIcon(style, new ImageIcon(image));
 			document.insertString(document.getLength(), "ignored length ", style);
 			document.insertString(document.getLength(), "\n" + text, null);
-			
 			revalidate();
 			repaint();
-			
 		}
 	}
 
 	public void writeReceivedMessage(TextMessage msg) throws ParseException, BadLocationException {
 		synchronized (area) {
-			String text = "[" + ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender()))
-					+ "] " + " [" + DateParser.parseString(msg.getDate()) + "] --> " + msg.getMessage().toString()
-					+ "\n";
+			String text = "[" + ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender())) + "] " + " ["
+					+ DateParser.parseString(msg.getDate()) + "] --> " + msg.getMessage().toString() + "\n";
 			document.insertString(document.getLength(), text, null);
 		}
 	}
@@ -282,8 +273,7 @@ public class Chat extends JFrame implements ActionListener {
 			if (image != null) {
 				cm.publishMessage(writeTextArea.getText(), image);
 				image = null;
-			}
-			else
+			} else
 				cm.publishMessage(writeTextArea.getText());
 			writeTextArea.setText("");
 		} else if (e.getSource() == addImageButton) {
