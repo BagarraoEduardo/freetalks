@@ -80,4 +80,8 @@ public class ImageMessage extends Message {
 		}
 		return obj;
 	}
+	
+	public BufferedImage getImage() {
+		return image;
+	}
 }

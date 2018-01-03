@@ -1,10 +1,15 @@
 
+
 package eduardo.bagarrao.freetalks.util.messageutil;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.Vector;
+
+import javax.imageio.ImageIO;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -25,7 +30,7 @@ import eduardo.bagarrao.freetalks.util.Encrypter;
 /**
  * @author Eduardo Bagarrao Class that handles all received and sent messages
  */
-public class MessageHandler extends Thread implements MqttCallback {
+public class MessageHandler implements MqttCallback {
 
 	private static final String BROKER = "tcp://iot.eclipse.org:1883";
 
@@ -177,7 +182,7 @@ public class MessageHandler extends Thread implements MqttCallback {
 	
 	public void writeMessage(String text, BufferedImage image) {
 		try {
-			Message message = new ImageMessage(clientId, text, image, new Date());
+			ImageMessage message = new ImageMessage(clientId, text, image, new Date());
 			if (isConnected()) {
 				try {
 					client.publish(Message.TOPIC, message);
@@ -216,20 +221,6 @@ public class MessageHandler extends Thread implements MqttCallback {
 			default:
 				break;
 			};
-		}
-		else {
-			//descarta...
-		}
-			
-	}
-
-	
-	
-	@Override
-	public void run() {
-		while (true) {
-			textMessageVector.forEach(message -> System.out.println("[Received text message] " + getNextImageMessage().toString()));
-			imageMessageVector.forEach(message -> System.out.println("[Received image message] " + getNextTextMessage().toString()));
-		}
+		}		
 	}
 }

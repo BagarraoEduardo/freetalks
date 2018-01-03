@@ -1,6 +1,7 @@
 package eduardo.bagarrao.freetalks.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -16,6 +17,7 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -26,11 +28,16 @@ import javax.swing.JTextPane;
 import javax.swing.border.Border;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 import eduardo.bagarrao.freetalks.engine.ConnectionManager;
 import eduardo.bagarrao.freetalks.message.ImageMessage;
 import eduardo.bagarrao.freetalks.message.TextMessage;
 import eduardo.bagarrao.freetalks.util.DateParser;
+import eduardo.bagarrao.freetalks.util.ImageDecoder;
 
 /**
  * 
@@ -104,7 +111,9 @@ public class Chat extends JFrame implements ActionListener {
 	 * 
 	 */
 	private BufferedImage image;
-	
+
+	private StyledDocument document;
+
 	/**
 	 * 
 	 * Chat Constructor.
@@ -124,6 +133,7 @@ public class Chat extends JFrame implements ActionListener {
 	 */
 	private void initGUI() {
 		this.area = new JTextPane();
+		this.document = (StyledDocument) area.getDocument();
 		this.writeTextArea = new JTextArea();
 		this.sendPanel = new JPanel(new BorderLayout());
 		this.sendButton = new JButton("Send!");
@@ -154,7 +164,8 @@ public class Chat extends JFrame implements ActionListener {
 		sendPanel.add(sendPanel2, BorderLayout.EAST);
 		mainPanel.add(area);
 		mainPanel.add(sendPanel, BorderLayout.SOUTH);
-		add(areaScrollPane);
+		Container container = getContentPane(); 
+		container.add(areaScrollPane, BorderLayout.CENTER);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainPanel.setBorder(padding);
@@ -162,13 +173,7 @@ public class Chat extends JFrame implements ActionListener {
 		setContentPane(mainPanel);
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		FileFilter filter = new FileNameExtensionFilter("Image files", "png");
-		fileChooser.setFileFilter(filter);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				cm.disconnect();
-			}
-		});
+		fileChooser.setFileFilter(filter);		
 	}
 
 	/**
@@ -193,10 +198,7 @@ public class Chat extends JFrame implements ActionListener {
 					while (true) {
 						Vector<TextMessage> vector = cm.getAllTexMessages();
 						for (TextMessage msg : vector) {
-							area.setText(area.getText() + "["
-									+ ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender())) + "] "
-									+ " [" + DateParser.parseString(msg.getDate()) + "] --> "
-									+ msg.getMessage().toString() + "\n");
+							writeReceivedMessage(msg);
 						}
 						Thread.sleep(1000);
 					}
@@ -204,11 +206,14 @@ public class Chat extends JFrame implements ActionListener {
 					e.printStackTrace();
 				} catch (ParseException e) {
 					e.printStackTrace();
+				} catch (BadLocationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}).start();
 	}
-	
+
 	/**
 	 * 
 	 * Creates a thread that at real time checks if there is received messages and
@@ -222,23 +227,61 @@ public class Chat extends JFrame implements ActionListener {
 					while (true) {
 						Vector<ImageMessage> vector = cm.getAllImageMessages();
 						for (ImageMessage msg : vector) {
-
-							//TODO:
+							writeReceivedMessage(msg);
 						}
 						Thread.sleep(1000);
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				} 
+				} catch (ParseException e) {
+					e.printStackTrace();
+				} catch (BadLocationException e) {
+					e.printStackTrace();
+				}
 			}
 		}).start();
+	}
+
+	public void writeReceivedMessage(ImageMessage msg) throws ParseException, BadLocationException {
+		synchronized (area) {
+			String text = "[" + ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender()))
+					+ "] " + " [" + DateParser.parseString(msg.getDate()) + "] --> " + msg.getMessage().toString()
+					+ "\n";
+			BufferedImage image = msg.getImage();
+			System.out.println("Vou imprimir a imagem -->");
+			try {
+				ImageIO.write(image, "png",new File("C:\\Users\\eduar\\Desktop\\saved.png") );
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Style style = document.addStyle("StyleName", null);
+			StyleConstants.setIcon(style, new ImageIcon(image));
+			document.insertString(document.getLength(), "ignored length ", style);
+			document.insertString(document.getLength(), "\n" + text, null);
+			
+			revalidate();
+			repaint();
+			
+		}
+	}
+
+	public void writeReceivedMessage(TextMessage msg) throws ParseException, BadLocationException {
+		synchronized (area) {
+			String text = "[" + ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender()))
+					+ "] " + " [" + DateParser.parseString(msg.getDate()) + "] --> " + msg.getMessage().toString()
+					+ "\n";
+			document.insertString(document.getLength(), text, null);
+		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == sendButton) {
-			if(image != null)
-				cm.publishMessage(writeTextArea.getText(),image); 
+			if (image != null) {
+				cm.publishMessage(writeTextArea.getText(), image);
+				image = null;
+			}
 			else
 				cm.publishMessage(writeTextArea.getText());
 			writeTextArea.setText("");
@@ -246,16 +289,15 @@ public class Chat extends JFrame implements ActionListener {
 			System.out.println("Estou aqui");
 			int returnValue = fileChooser.showOpenDialog(this);
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				//TODO: filechooser select file extensions
+				// TODO: filechooser select file extensions
 				File file = fileChooser.getSelectedFile();
+				System.out.println(file.toString());
 				try {
 					this.image = ImageIO.read(file);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-			} else {
-				// TODO: return file canceled
-			} 
+			}
 		}
 	}
 }

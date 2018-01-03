@@ -171,6 +171,9 @@ public class ConnectionManager {
 	 *            data to send to {@link #handler} to publish
 	 */
 	public void publishMessage(String text, BufferedImage image) {
-		handler.writeMessage(text,image);
+		if(image != null)
+			handler.writeMessage(text,image);
+		else
+			handler.writeMessage(text);
 	}
 }

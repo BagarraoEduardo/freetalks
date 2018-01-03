@@ -1,3 +1,4 @@
+
 package eduardo.bagarrao.freetalks.gui;
 
 import java.awt.FlowLayout;
@@ -24,7 +25,7 @@ public class Login extends JFrame {
 
 	public static final String APP_NAME = "FreeTalks";
 	public static final String PHASE = "Alpha";
-	public static final String VERSION = "0.0.2";
+	public static final String VERSION = "0.0.3";
 
 	private ConnectionManager cm = ConnectionManager.getInstance();
 

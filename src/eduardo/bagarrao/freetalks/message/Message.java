@@ -85,7 +85,7 @@ public abstract class Message extends MqttMessage {
 		this.message = message;
 		this.date = date;
 		this.type = type;
-		setPayload(Encrypter.encrypt(toJSONObject().toString(), "ssshhhhhhhhhhh!!!!").getBytes());
+//		setPayload(Encrypter.encrypt(toJSONObject().toString(), "ssshhhhhhhhhhh!!!!").getBytes());
 	}
 
 	/**
