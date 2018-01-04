@@ -11,69 +11,71 @@ import eduardo.bagarrao.freetalks.util.messageutil.MessageType;
 
 /**
  * 
+ * Message super class.
+ * 
  * @author Eduardo
  *
  */
 public abstract class Message extends MqttMessage {
 
 	/**
-	 * 
+	 * topic of the messages.
 	 */
 	public static final String TOPIC = "FreeTalks2017newChat";
 
 	/**
-	 * 
+	 * key of {@link #sender}.
 	 */
 	protected static final String KEY_SENDER = "sender";
 	
 	/**
-	 * 
+	 * Key of the {@link #message}.
 	 */
 	protected static final String KEY_MESSAGE = "message";
 	
 	/**
-	 * 
+	 * Key of the {@link #date}.
 	 */
 	protected static final String KEY_DATE = "date";
 	
 	
 	/**
-	 *  
+	 *  Topic of the message.
 	 */
 	 protected static final String KEY_TOPIC = "topic";
 	 
 	 /**
-	  * 
+	  * Key of the Message type.
 	  */
 	public static final String KEY_TYPE = "type";
 
 	/**
-	 * 
+	 * message sender.
 	 */
 	private String sender;
 	
 	/**
-	 * 
+	 * text that message contains.
 	 */
 	private String message;
 	
 	/**
-	 * 
+	 * when the message was sent.
 	 */
 	private Date date;
 	
 	/**
-	 * 
+	 * topic of the message.
 	 */
 	private String topic;
 	
 	/**
-	 * 
+	 * Type of the message.
 	 */
 	private MessageType type;
 
 	/**
-	 *  
+	 * Message constructor.
 	 * @param sender
 	 * @param message
 	 * @param date
@@ -85,11 +87,10 @@ public abstract class Message extends MqttMessage {
 		this.message = message;
 		this.date = date;
 		this.type = type;
-//		setPayload(Encrypter.encrypt(toJSONObject().toString(), "ssshhhhhhhhhhh!!!!").getBytes());
 	}
 
 	/**
-	 * 
+	 * Message constructor that receives a JSONObject and a message type.
 	 * @param obj
 	 * @param type
 	 * @throws Exception
@@ -107,8 +108,8 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
-	 * @param topic
+	 * Message constructor.
+	 * @param type
 	 */
 	protected Message(MessageType type) {
 		this.date = null;
@@ -118,7 +119,7 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
+	 * getter for {@link #sender}.
 	 * @return
 	 */
 	public String getSender() {
@@ -126,7 +127,7 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
+	 * getter for {@link #message}.
 	 * @return
 	 */
 	public String getMessage() {
@@ -134,7 +135,7 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
+	 * getter for {@link #date}.
 	 * @return
 	 */
 	public Date getDate() {
@@ -142,7 +143,7 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
+	 * getter for {@link #type}.
 	 * @return
 	 */
 	protected MessageType getType() {
@@ -150,7 +151,7 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
+	 * setter for {@link #sender}.
 	 * @param sender
 	 */
 	protected void setSender(String sender) {
@@ -158,7 +159,7 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
+	 * setter for {@link #message}.
 	 * @param message
 	 */
 	protected void setMessage(String message) {
@@ -166,7 +167,7 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
+	 * setter for {@link #date}.
 	 * @param date
 	 */
 	protected void setDate(Date date) {
@@ -174,7 +175,7 @@ public abstract class Message extends MqttMessage {
 	}
 
 	/**
-	 * 
+	 * Converts the message to a JSONObject.
 	 * @return
 	 */
 	public abstract JSONObject toJSONObject();

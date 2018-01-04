@@ -85,7 +85,7 @@ public class Chat extends JFrame implements ActionListener {
 	private JButton addImageButton;
 
 	/**
-	 * panel that contains both {@link #sendPanel} and {@link #writeTextArea}.
+	 * panel that contains both {@link #sendPanel2} and {@link #writeTextArea}.
 	 */
 	private JPanel sendPanel;
 
@@ -95,30 +95,32 @@ public class Chat extends JFrame implements ActionListener {
 	private JFileChooser fileChooser;
 
 	/**
-	 * 
 	 * Main panel, needed to use the {@link #areaScrollPane}.
-	 * 
 	 */
 	private JPanel mainPanel;
 
 	/**
-	 *
+	 * Contains {@link #addImageButton} and {@link #sendButton}.
+	 */
+	private JPanel sendPanel2;
+	
+	/**
 	 * allows {@link #area} to have a scrollbar.
-	 * 
 	 */
 	private JScrollPane areaScrollPane;
 
 	/**
-	 * 
+	 * Image opened to send.
 	 */
 	private BufferedImage image;
 
+	/**
+	 * Document where the images and text will be added.
+	 */
 	private StyledDocument document;
 
 	/**
-	 * 
 	 * Chat Constructor.
-	 * 
 	 */
 	public Chat() {
 		initGUI();
@@ -128,30 +130,26 @@ public class Chat extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 
 	 * Inits all the JFrame content.
-	 * 
 	 */
 	private void initGUI() {
 		this.area = new JTextPane();
 		this.document = (StyledDocument) area.getDocument();
 		this.writeTextArea = new JTextArea();
 		this.sendPanel = new JPanel(new BorderLayout());
+		this.sendPanel2 = new JPanel(new GridLayout(1, 2));
 		this.sendButton = new JButton("Send!");
 		this.addImageButton = new JButton("Include Image");
 		this.mainPanel = new JPanel(new BorderLayout());
 		this.areaScrollPane = new JScrollPane(area, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-	
 		this.fileChooser = new JFileChooser();
 		this.padding = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 		this.image = null;
 	}
 
 	/**
-	 * 
 	 * Sets all the JFrame content and also the own JFrame.
-	 * 
 	 */
 	private void setupGUI() {
 		setTitle("[" + cm.getClientId() + "]" + Login.APP_NAME + " " + Login.PHASE + " v" + Login.VERSION);
@@ -160,7 +158,6 @@ public class Chat extends JFrame implements ActionListener {
 		addImageButton.addActionListener(this);
 		sendButton.addActionListener(this);
 		sendPanel.add(writeTextArea);
-		JPanel sendPanel2 = new JPanel(new GridLayout(1, 2));
 		sendPanel2.add(addImageButton);
 		sendPanel2.add(sendButton);
 		sendPanel.add(sendPanel2, BorderLayout.EAST);
@@ -180,19 +177,15 @@ public class Chat extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 
 	 * sets the JFrame visibility flag to true.
-	 * 
 	 */
 	public void init() {
 		setVisible(true);
 	}
 
 	/**
-	 * 
-	 * Creates a thread that at real time checks if there is received messages and
+	 * Creates a thread that at real time checks if there is received  text messages and
 	 * writes them in the {@link #area}.
-	 * 
 	 */
 	public void awaitTextMessages() {
 		new Thread(() -> {
@@ -218,10 +211,8 @@ public class Chat extends JFrame implements ActionListener {
 	}
 
 	/**
-	 * 
-	 * Creates a thread that at real time checks if there is received messages and
+	 * Creates a thread that at real time checks if there is received image messages and
 	 * writes them in the {@link #area}.
-	 * 
 	 */
 	public void awaitImageMessages() {
 		new Thread(() -> {
@@ -245,6 +236,12 @@ public class Chat extends JFrame implements ActionListener {
 		}).start();
 	}
 
+	/**
+	 * Writes a received image message in the {@link #document}.
+	 * @param msg
+	 * @throws ParseException
+	 * @throws BadLocationException
+	 */
 	public void writeReceivedMessage(ImageMessage msg) throws ParseException, BadLocationException {
 		synchronized (area) {
 			String text = "[" + ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender())) + "] " + " ["
@@ -259,6 +256,12 @@ public class Chat extends JFrame implements ActionListener {
 		}
 	}
 
+	/**
+	 * Writes a received text message in the {@link #document}.
+	 * @param msg message to write
+	 * @throws ParseException
+	 * @throws BadLocationException
+	 */
 	public void writeReceivedMessage(TextMessage msg) throws ParseException, BadLocationException {
 		synchronized (area) {
 			String text = "[" + ((msg.getSender().equals(cm.getClientId()) ? "You" : msg.getSender())) + "] " + " ["
@@ -280,7 +283,6 @@ public class Chat extends JFrame implements ActionListener {
 			System.out.println("Estou aqui");
 			int returnValue = fileChooser.showOpenDialog(this);
 			if (returnValue == JFileChooser.APPROVE_OPTION) {
-				// TODO: filechooser select file extensions
 				File file = fileChooser.getSelectedFile();
 				System.out.println(file.toString());
 				try {

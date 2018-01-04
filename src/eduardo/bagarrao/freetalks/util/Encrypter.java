@@ -11,23 +11,18 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * 
- * @author eduar
+ * Class that encrypts and decrypts the messages that are sent.
+ * 
+ * @author Eduardo
  *
  */
 public class Encrypter {
 
-	/**
-	 * 
-	 */
 	private static SecretKeySpec secretKey;
-
-	/**
-	 * 
-	 */
 	private static byte[] key;
 
 	/**
-	 * 
+	 * sets the key.
 	 * @param myKey
 	 */
 	public static void setKey(String myKey) {
@@ -46,7 +41,7 @@ public class Encrypter {
 	}
 
 	/**
-	 * 
+	 * encrypts the String.
 	 * @param strToEncrypt
 	 * @param secret
 	 * @return
@@ -64,7 +59,7 @@ public class Encrypter {
 	}
 
 	/**
-	 * 
+	 * decrypts the string.
 	 * @param strToDecrypt
 	 * @param secret
 	 * @return

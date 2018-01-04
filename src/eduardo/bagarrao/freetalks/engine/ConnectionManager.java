@@ -123,7 +123,7 @@ public class ConnectionManager {
 
 	/**
 	 * 
-	 * Returns all messages that {@link #handler} has on his Vector
+	 * Returns all text messages that {@link #handler} has on his Vector
 	 * 
 	 * @return Vector with all textMessages that {@link #handler} has saved.
 	 */
@@ -139,9 +139,9 @@ public class ConnectionManager {
 
 	/**
 	 * 
-	 * Returns all messages that {@link #handler} has on his Vector
+	 * Returns all image messages that {@link #handler} has on his Vector
 	 * 
-	 * @return Vector with all textMessages that {@link #handler} has saved.
+	 * @return Vector with all imageMessages that {@link #handler} has saved.
 	 */
 	public Vector<ImageMessage> getAllImageMessages() {
 		Vector<ImageMessage> vector = new Vector<ImageMessage>();

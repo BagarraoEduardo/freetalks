@@ -10,15 +10,37 @@ import eduardo.bagarrao.freetalks.util.DateParser;
 import eduardo.bagarrao.freetalks.util.Encrypter;
 import eduardo.bagarrao.freetalks.util.messageutil.MessageType;
 
+/**
+ * 
+ * TextMessage class.
+ * 
+ * @author Eduardo
+ *
+ */
 public class TextMessage extends Message {
 
+	/**
+	 * Type of the message.
+	 */
 	private static final MessageType TYPE = MessageType.TEXT_MESSAGE;
 
+	/**
+	 * Text Message constructor.
+	 * @param sender
+	 * @param message
+	 * @param date
+	 * @throws Exception
+	 */
 	public TextMessage(String sender, String message, Date date) throws Exception {
 		super(sender, message, date, TYPE);
 		setPayload(Encrypter.encrypt(toJSONObject().toString(), "ssshhhhhhhhhhh!!!!").getBytes());
 	}
 
+	/**
+	 * Constructor that receives a JSONObject.
+	 * @param obj
+	 * @throws Exception
+	 */
 	public TextMessage(JSONObject obj) throws Exception {
 		super(obj, TYPE);
 		if (obj.has(KEY_SENDER) && obj.has(KEY_MESSAGE) && obj.has(KEY_DATE)) {

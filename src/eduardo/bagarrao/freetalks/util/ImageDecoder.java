@@ -9,15 +9,33 @@ import javax.imageio.ImageIO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * 
+ * Class that encodes and decodes BufferedImages into JSONArray. 
+ * 
+ * @author Eduardo
+ *
+ */
 public class ImageDecoder {
 
+	/**
+	 * Width position.
+	 */
 	private static final int WIDTH_CODE = 0;
+	
+	/**
+	 * Height position.
+	 */
 	private static final int HEIGHT_CODE = 1;
+	
+	/**
+	 * Data position.
+	 */
 	private static final int DATA_CODE = 2;
 
 	/**
-	 * 
-	 * @param image
+	 * encodes the BufferedImage into a JSONArray
+	 * @param image image to encode
 	 * @return
 	 */
 	public static JSONArray parseJSONArray(BufferedImage image) {
@@ -39,9 +57,9 @@ public class ImageDecoder {
 	}
 
 	/**
-	 * 
+	 * decodes the JSONArray into a BufferedImage
 	 * @param array
-	 * @return
+	 * @return BufferedImage converted from the JSONArray 
 	 * @throws IOException
 	 */
 	public static BufferedImage parseBufferedImage(JSONArray array) throws IOException {

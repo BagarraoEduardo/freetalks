@@ -1,15 +1,9 @@
-
-
 package eduardo.bagarrao.freetalks.util.messageutil;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.Vector;
-
-import javax.imageio.ImageIO;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -17,7 +11,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
@@ -28,28 +21,56 @@ import eduardo.bagarrao.freetalks.message.TextMessage;
 import eduardo.bagarrao.freetalks.util.Encrypter;
 
 /**
- * @author Eduardo Bagarrao Class that handles all received and sent messages
+ * @author Eduardo Bagarrao 
+ * 
+ * Class that handles all received and sent messages
  */
 public class MessageHandler implements MqttCallback {
 
+	/**
+	 * Broker of the MQTT Server.
+	 */
 	private static final String BROKER = "tcp://iot.eclipse.org:1883";
 
+	/**
+	 * vector that stores all the received textMessages.
+	 */
 	private Vector<TextMessage> textMessageVector;
+	
+	/**
+	 * vector that stores all the received imageMessages.
+	 */
 	private Vector<ImageMessage> imageMessageVector;
 	
+	/**
+	 * Mqqtclient.
+	 */
 	private MqttClient client;
+	
+	/**
+	 * options of the MQTT client.
+	 */
 	private MqttConnectOptions options;
+	
+	/**
+	 * persistence of the MQTT client.
+	 */
 	private MemoryPersistence persistence;
+	
+	/**
+	 * Client Id to Sign in.
+	 */
 	private String clientId;
+	
+	/**
+	 * Value that checks that the user is already connected or not.
+	 */
 	private boolean isConnected;
 
 	/**
-	 * Message handler constructor
-	 * 
-	 * @param clientId
-	 *            session id inserted into login
+	 * MessageHandler constructor.
+	 * @param clientId id to sign in.
 	 * @throws MqttException
-	 *             mqttexception
 	 */
 	public MessageHandler(String clientId) throws MqttException {
 		this.textMessageVector = new Vector<TextMessage>();
@@ -138,31 +159,29 @@ public class MessageHandler implements MqttCallback {
 	}
 	
 	/**
-	 * returns the oldest message from {@link #textMessageVector}
+	 * returns the oldest message from {@link #imageMessageVector}
 	 * 
-	 * @return null value if the {@link #textMessageVector} size is zero, else returns the
-	 *         message at the index 0 of the {@link #textMessageVector}
+	 * @return null value if the {@link #imageMessageVector} size is zero, else returns the
+	 *         message at the index 0 of the {@link #imageMessageVector}
 	 */
 	public ImageMessage getNextImageMessage() {
 		return (hasNextImageMessage()) ? imageMessageVector.remove(0) : null;
 	}
 
 	/**
-	 * checks if the {@link #textMessageVector} has messages by handle
+	 * checks if the {@link #imageMessageVector} has messages by handle
 	 * 
-	 * @return checks if the size of the {@link #textMessageVector} is not zero
+	 * @return checks if the size of the {@link #imageMessageVector} is not zero
 	 */
 	private boolean hasNextImageMessage() {
 		return imageMessageVector.size() != 0;
 	}
 
 	/**
-	 * Sends a message to the Eclipse Paho server, who will be shown on all online
-	 * FreeTalker chats
+	 * Sends a text message to the Eclipse Paho server, who will be shown on all online
+	 * FreeTalker chats.
 	 * 
-	 * @param text
-	 * @throws MqttPersistenceException
-	 * @throws MqttException
+	 * @param text text to send.
 	 */
 	public void writeMessage(String text) {
 		try {
@@ -180,6 +199,13 @@ public class MessageHandler implements MqttCallback {
 		}
 	}
 	
+	/**
+	 * Sends a image message to the Eclipse Paho server, who will be shown on all online
+	 * FreeTalker chats
+	 * 
+	 * @param text text to send.
+	 * @param image image to send.
+	 */
 	public void writeMessage(String text, BufferedImage image) {
 		try {
 			ImageMessage message = new ImageMessage(clientId, text, image, new Date());

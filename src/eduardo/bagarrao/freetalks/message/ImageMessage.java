@@ -12,25 +12,32 @@ import eduardo.bagarrao.freetalks.util.Encrypter;
 import eduardo.bagarrao.freetalks.util.ImageDecoder;
 import eduardo.bagarrao.freetalks.util.messageutil.MessageType;
 
+/**
+ * 
+ * @author Eduardo
+ *
+ *Image message class.
+ *
+ */
 public class ImageMessage extends Message {
 
 	/**
-	 * 
+	 * Type of the message.
 	 */
 	private static final MessageType TYPE = MessageType.IMAGE_MESSAGE;
 
 	/**
-	 * 
+	 * Key of {@value #TYPE}
 	 */
 	public static final String KEY_IMAGE = "image";
 
 	/**
-	 * 
+	 * Image of the message.
 	 */
 	private BufferedImage image;
 
 	/**
-	 * 
+	 * ImageMessage constructor.
 	 * @param sender
 	 * @param message
 	 * @param image
@@ -40,11 +47,11 @@ public class ImageMessage extends Message {
 	public ImageMessage(String sender, String message, BufferedImage image, Date date) throws Exception {
 		super(sender, message, date, TYPE);
 		this.image = image;
-		setPayload(Encrypter.encrypt(toJSONObject().toString(), "ssshhhhhhhhhhh!!!!").getBytes()); // TODO:
+		setPayload(Encrypter.encrypt(toJSONObject().toString(), "ssshhhhhhhhhhh!!!!").getBytes());
 	}
 
 	/**
-	 * 
+	 * ImageMessages constructor that receives a JSONObject. 
 	 * @param obj
 	 * @throws Exception
 	 */
@@ -81,6 +88,10 @@ public class ImageMessage extends Message {
 		return obj;
 	}
 	
+	/**
+	 * Getter for {@link #image}.
+	 * @return
+	 */
 	public BufferedImage getImage() {
 		return image;
 	}

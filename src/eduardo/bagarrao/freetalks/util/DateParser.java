@@ -8,24 +8,29 @@ import java.util.Date;
 /**
  * 
  * @author Eduardo
+ * 
+ * Class that returns parts of a java.util.Date object.
  *
  */
 public class DateParser {
 
+	/**
+	 * Calendar instance.
+	 */
 	private static Calendar cal = Calendar.getInstance();
 	
 	/**
-	 * 
+	 * date format that is intended to use.
 	 */
 	private static final String STRING_DATE_FORMAT = "dd-M-yyyy HH:mm:ss";
 	
 	/**
-	 * 
+	 * Simple date format created from the {@link #STRING_DATE_FORMAT}
 	 */
 	private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(STRING_DATE_FORMAT);
 
 	/**
-	 * 
+	 * From a date in string format returns a Date object.
 	 * @param date
 	 * @return
 	 * @throws ParseException
@@ -35,7 +40,7 @@ public class DateParser {
 	}
 
 	/**
-	 * 
+	 * From a Date object converts to a string with the {@link #STRING_DATE_FORMAT} format.
 	 * @param date
 	 * @return
 	 * @throws ParseException
@@ -45,7 +50,7 @@ public class DateParser {
 	}
 
 	/**
-	 * 
+	 * returns the seconds of a date.
 	 * @param date
 	 * @return
 	 */
@@ -55,7 +60,7 @@ public class DateParser {
 	}
 
 	/**
-	 * 
+	 * returns the minutes of a date.
 	 * @param date
 	 * @return
 	 */
@@ -65,7 +70,7 @@ public class DateParser {
 	}
 
 	/**
-	 * 
+	 * returns the hours of a date.
 	 * @param date
 	 * @return
 	 */
@@ -75,7 +80,7 @@ public class DateParser {
 	}
 
 	/**
-	 * 
+	 * returns the day of a date.
 	 * @param date
 	 * @return
 	 */
@@ -85,7 +90,7 @@ public class DateParser {
 	}
 
 	/**
-	 * 
+	 * returns the month of a date.
 	 * @param date
 	 * @return
 	 */
@@ -95,7 +100,7 @@ public class DateParser {
 	}
 
 	/**
-	 * 
+	 * returns the year of a date.
 	 * @param date
 	 * @return
 	 */

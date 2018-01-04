@@ -3,8 +3,6 @@ package eduardo.bagarrao.freetalks.gui;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -19,22 +17,68 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import eduardo.bagarrao.freetalks.engine.ConnectionManager;
 
+/**
+ * 
+ * class that is used to login on the MQTT server.
+ * 
+ * @author Eduardo
+ *
+ */
 public class Login extends JFrame {
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * name of the app.
+	 */
 	public static final String APP_NAME = "FreeTalks";
+	
+	/**
+	 * Phase of the app.
+	 */
 	public static final String PHASE = "Alpha";
+	
+	/**
+	 * Version of the app.
+	 */
 	public static final String VERSION = "0.0.3";
 
+	/**
+	 * Object that handles the connection.
+	 */
 	private ConnectionManager cm = ConnectionManager.getInstance();
 
+	/**
+	 * JTextfield used for insert the username.
+	 */
 	private JTextField usernameTextField;
+	
+	/**
+	 * label that is at left of the username JTextfield.
+	 */
 	private JLabel usernameLabel;
+	
+	/**
+	 * JPanel that contains {@link #usernameLabel} and {@link #usernameTextField}.
+	 */
 	private JPanel usernamePanel;
+	
+	/**
+	 * JPanel that contains {@link #loginButton}.
+	 */
 	private JPanel loginPanel;
+	
+	/**
+	 * button for login action.
+	 */
 	private JButton loginButton;
 
+	/**
+	 * Login construtor.
+	 */
 	public Login() {
 		
 		setTitle(APP_NAME + " " + PHASE + " v" + VERSION);
@@ -101,18 +145,28 @@ public class Login extends JFrame {
 			new Chat().init();
 			close();
 		});
-		
 		getRootPane().setDefaultButton(loginButton);
 	}
 
+	/**
+	 * shows the open frame.
+	 */
 	public void go() {
 		setVisible(true);
 	}
 
+	/**
+	 * closes the login frame.
+	 */
 	private void close() {
 		setVisible(false);
 	}
 
+	/**
+	 * Checks if the username is valid to login.
+	 * @param username username to insert.
+	 * @return validation of the username.
+	 */
 	private boolean isValidUsername(String username) {
 		return (!username.equals(""));
 	}
