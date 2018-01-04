@@ -2,11 +2,13 @@ package eduardo.bagarrao.freetalks.util.messageutil;
 
 /**
  * 
- * @author eduar
+ * Kinds of messages that exists in this app.
+ * 
+ * @author Eduardo
  *
  */
 public enum MessageType {
 
-	TEXT_MESSAGE, IMAGE_MESSAGE, QUERY, TOPIC;
+	TEXT_MESSAGE, IMAGE_MESSAGE;
 	
 }
